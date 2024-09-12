@@ -1,12 +1,22 @@
+import { useContext } from "react";
 import { Link, NavLink } from "react-router-dom";
+import { AuthContext } from "../providers/AuthProvider";
 
 const NavBar = () => {
+  const { user, logOut } = useContext(AuthContext);
   const links = [
     { path: "/", title: "Home" },
     { path: "/login", title: "Login" },
     { path: "/sign-up", title: "SignUP" },
     { path: "/show-users", title: "Show Users" },
   ];
+
+  const handleLogOut = () => {
+    logOut()
+      .then(() => {})
+      .catch((err) => console.log(err.message));
+  };
+
   return (
     <>
       <div className="navbar bg-zinc-800 px-20">
@@ -48,7 +58,11 @@ const NavBar = () => {
               ))}
             </ul>
           </div>
-          <a className="btn btn-ghost text-xl text-white">Itransition Task</a>
+          <Link to="/">
+            <h3 className="btn btn-ghost text-xl text-white">
+              Itransition Task
+            </h3>
+          </Link>
         </div>
         <div className="navbar-center hidden lg:flex">
           <ul className="menu menu-horizontal gap-x-3">
@@ -67,9 +81,17 @@ const NavBar = () => {
           </ul>
         </div>
         <div className="navbar-end">
-          <Link to="/login">
-            <button className="btn btn-secondary">Login</button>
-          </Link>
+          {user ? (
+            <Link to="/login">
+              <button onClick={handleLogOut} className="btn btn-secondary">
+                Logout
+              </button>
+            </Link>
+          ) : (
+            <Link to="/login">
+              <button className="btn btn-secondary">Login</button>
+            </Link>
+          )}
         </div>
       </div>
     </>

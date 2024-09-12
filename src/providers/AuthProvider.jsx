@@ -27,7 +27,7 @@ const AuthProvider = ({ children }) => {
   };
 
   // update profile
-  const handleUpdateProfile = (user, name) => {
+  const handleUpdateProfile = async (user, name) => {
     return updateProfile(user, {
       displayName: name,
       photoURL: user.photoURL,
@@ -45,10 +45,14 @@ const AuthProvider = ({ children }) => {
   };
 
   useEffect(() => {
+    // eslint-disable-next-line no-unused-vars
     const unSubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
       setLoading(false);
     });
+    return () => {
+      unSubscribe();
+    };
   }, []);
 
   // login with google

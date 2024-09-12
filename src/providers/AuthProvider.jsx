@@ -45,7 +45,6 @@ const AuthProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    // eslint-disable-next-line no-unused-vars
     const unSubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
       setLoading(false);
@@ -67,6 +66,8 @@ const AuthProvider = ({ children }) => {
     handleUpdateProfile,
     logOut,
     signInWithGoogle,
+    user,
+    loading,
   };
 
   return (

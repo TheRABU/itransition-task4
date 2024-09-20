@@ -10,13 +10,32 @@ const LoginPage = () => {
     const form = e.target;
     const email = form.email.value;
     const password = form.password.value;
-    signIn(email, password)
-      .then((result) => {
-        const user = result.user;
-        navigate("/");
-        console.log("Signed in: ", user);
+    const loginCredentials = {
+      email,
+      password,
+    };
+
+    fetch(`http://localhost:5000/api/users/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(loginCredentials),
+    })
+      .then((res) => {
+        if (!res.ok) {
+          return res.text().then((text) => {
+            throw new Error(text);
+          });
+        }
+        return res.json();
       })
-      .catch((err) => console.log(err.message));
+      .then(() => {
+        navigate("/");
+      })
+      .catch((err) => {
+        console.log(err.message);
+      });
   };
 
   return (

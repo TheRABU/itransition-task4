@@ -3,30 +3,56 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { AuthContext } from "../providers/AuthProvider";
 import Swal from "sweetalert2";
 const SignupPage = () => {
-  const { createUser } = useContext(AuthContext);
   const navigate = useNavigate();
   const location = useLocation();
   // signupHandler
-  const handleSignUp = (e) => {
+  const handleSignUp = async (e) => {
     e.preventDefault();
     const form = e.target;
+    const name = form.name.value;
     const email = form.email.value;
-    const password = form.email.value;
+    const password = form.password.value;
 
-    if (password.length > 0) {
-      createUser(email, password)
-        .then(() => {
-          Swal.fire({
-            position: "top-center",
-            icon: "success",
-            title: "Registration Successful",
-            showConfirmButton: false,
-            timer: 1500,
-          });
-          const redirectPath = location?.state?.from?.pathname || "/";
-          navigate(redirectPath);
+    const signupCredentials = {
+      name,
+      email,
+      password,
+    };
+
+    try {
+      if (password.length > 0) {
+        fetch(`http://localhost:5000/api/users/register`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "Application/json",
+          },
+          body: JSON.stringify(signupCredentials),
         })
-        .catch((err) => console.log(err.message));
+          .then((res) => res.json())
+          .then((data) => {
+            if (data.error) {
+              alert(data.error);
+            } else {
+              console.log("User Registered:", data.user);
+              alert(
+                `Registration successful! Registered at: ${data.user.registrationTime}`
+              );
+            }
+          })
+          .then(() => {
+            Swal.fire({
+              position: "top-center",
+              icon: "success",
+              title: "Registration Successful",
+              showConfirmButton: false,
+              timer: 1500,
+            });
+            const redirect = location?.state?.from?.pathname || "/";
+            navigate(redirect);
+          });
+      }
+    } catch (error) {
+      console.log("Error found at Trycatch", error.message);
     }
   };
   return (
@@ -45,12 +71,24 @@ const SignupPage = () => {
             <form onSubmit={handleSignUp} className="card-body">
               <div className="form-control">
                 <label className="label">
+                  <span className="label-text">Name</span>
+                </label>
+                <input
+                  type="text"
+                  name="name"
+                  placeholder="Name"
+                  className="input input-bordered"
+                  required
+                />
+              </div>
+              <div className="form-control">
+                <label className="label">
                   <span className="label-text">Email</span>
                 </label>
                 <input
                   type="email"
                   name="email"
-                  placeholder="email"
+                  placeholder="Email"
                   className="input input-bordered"
                   required
                 />
@@ -62,7 +100,7 @@ const SignupPage = () => {
                 <input
                   type="password"
                   name="password"
-                  placeholder="password"
+                  placeholder="Password"
                   className="input input-bordered"
                   required
                 />
@@ -74,13 +112,13 @@ const SignupPage = () => {
               </div>
               <div className="form-control mt-6">
                 <button type="submit" className="btn btn-primary">
-                  Login
+                  SIGN UP
                 </button>
               </div>
               <div>
                 <Link className="text-black" to="/login">
                   Already have an account?{" "}
-                  <span className="text-blue-500 underline">Login Now</span>
+                  <span className="text-blue-500 underline">Signup Now</span>
                 </Link>
               </div>
             </form>

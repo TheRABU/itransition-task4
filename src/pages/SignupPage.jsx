@@ -1,6 +1,5 @@
-import { useContext } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { AuthContext } from "../providers/AuthProvider";
+
 import Swal from "sweetalert2";
 const SignupPage = () => {
   const navigate = useNavigate();
@@ -21,13 +20,16 @@ const SignupPage = () => {
 
     try {
       if (password.length > 0) {
-        fetch(`http://localhost:5000/api/users/register`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "Application/json",
-          },
-          body: JSON.stringify(signupCredentials),
-        })
+        fetch(
+          `https://itransition-task4-backend.onrender.com/api/users/register`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "Application/json",
+            },
+            body: JSON.stringify(signupCredentials),
+          }
+        )
           .then((res) => res.json())
           .then((data) => {
             if (data.error) {

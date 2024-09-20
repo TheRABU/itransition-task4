@@ -1,9 +1,6 @@
-import { useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { AuthContext } from "../providers/AuthProvider";
 
 const LoginPage = () => {
-  const { signIn } = useContext(AuthContext);
   const navigate = useNavigate();
   const handleLogin = (e) => {
     e.preventDefault();
@@ -15,7 +12,7 @@ const LoginPage = () => {
       password,
     };
 
-    fetch(`http://localhost:5000/api/users/login`, {
+    fetch(`https://itransition-task4-backend.onrender.com/api/users/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
